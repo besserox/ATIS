@@ -47,6 +47,7 @@ set_tests_properties(MPI-which-mpirun  PROPERTIES TIMEOUT 10)
 
 # Compiling HelloWorld example
 add_test(MPI-compilation-hello "${TEST_DIR}/compile-hello.sh")
+set_tests_properties(MPI-compilation-hello   PROPERTIES TIMEOUT 10)
 
 # Execution of HelloWorld with mpirun and the program as absolute path
 add_test(MPI-mpirun_and_hello_with_absolute_path       "${TEST_DIR}/mpirun_absolute_path.sh" "${TEST_DIR}/hello")
@@ -82,7 +83,7 @@ set_tests_properties(MPI-mpirun_dynamic_libraries   PROPERTIES FAIL_REGULAR_EXPR
 
 # Compiling OSU micro-benchmark
 add_test(MPI-compilation-omb   "${TEST_DIR}/compile-omb.sh")
-set_tests_properties(MPI-mpirun_hello_as_relative_path   PROPERTIES TIMEOUT 120)
+set_tests_properties(MPI-compilation-omb   PROPERTIES TIMEOUT 120)
 set(OMB_DIR "${TEST_DIR}/${OMB_NAME}/mpi/pt2pt") 
 
 # Execution of OMB osu_bw

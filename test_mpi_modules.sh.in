@@ -1,6 +1,6 @@
 #!/bin/bash -l
 #OAR -l /nodes=2/core=1
-#OAR -n ModuleTest_MPI
+#OAR -n ModCheck_MPI
 
 TEST_DIR="@CMAKE_BINARY_DIR@"
 CMAKE_CMD="@CMAKE_COMMAND@"

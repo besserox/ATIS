@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.4)
 
-project(Module-Test_MPI)
+project(Modules-Check_MPI)
 include(CTest)
 enable_testing()
 

@@ -7,10 +7,12 @@ set -e
 COMMAND="$@"
 
 MPIRUN_COMMAND="$(which mpirun) -machinefile ${OAR_NODE_FILE} -np 2 ${COMMAND}"
-echo "PWD: ${PWD}"
-echo "Running: ${MPIRUN_COMMAND}"
+
 echo "Machine file:"
 cat "${OAR_NODE_FILE}"
+echo "PWD: ${PWD}"
+echo "Running: ${MPIRUN_COMMAND}"
 echo
+
 ${MPIRUN_COMMAND}
 

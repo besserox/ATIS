@@ -27,6 +27,8 @@ configure_file( "${CMAKE_SOURCE_DIR}/update_mpi_module_list.sh.in"       "${CMAK
 # generate initial module list
 execute_process( COMMAND "${CMAKE_BINARY_DIR}/update_mpi_module_list.sh" )
 
+# create log directory
+file( MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/logs" )
 
 
 

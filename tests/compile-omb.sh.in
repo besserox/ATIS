@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Stop on error
+set -e
+
+TEST_DIR="@TEST_DIR@"
+SOURCE_DIR="@CMAKE_SOURCE_DIR@"
+OMB_NAME="@OMB_NAME@"
+OMB_DIR="${TEST_DIR}/${OMB_NAME}"
+
+# Erase any previous compilation because we want to test the actual compilation
+# Check for osu_bw.c file to make sure we are deleting a wrong directory
+if [ -f "${OMB_DIR}/mpi/pt2pt/osu_bw.c" ] ; then
+  rm -rf "${OMB_DIR}"
+fi
+
+# Configure and compile OMB
+cd "${TEST_DIR}"
+tar -xzf "${SOURCE_DIR}/tests/${OMB_NAME}.tar.gz"
+cd "${OMB_DIR}"
+./configure
+make

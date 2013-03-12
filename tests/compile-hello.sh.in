@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Stop on error
+set -e
+
+TEST_DIR="@TEST_DIR@"
+SOURCE_DIR="@CMAKE_SOURCE_DIR@"
+
+# Erase any previous compilation because we want to test the actual compilation
+rm -f "${TEST_DIR}/hello"
+
+# Test compilation
+mpicc "${SOURCE_DIR}/tests/hello.c" -o "${TEST_DIR}/hello"
+
+
+

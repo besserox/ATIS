@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+[ -z "${OAR_NODE_FILE}" ] && { echo "Error: OAR_NODE_FILE not defined. You should run the test inside an OAR job" ; exit 1 ; }
+
+COMMAND="$@"
+
+MPIRUN_COMMAND="$(which mpirun) -machinefile ${OAR_NODE_FILE} -np 2 ${COMMAND}"
+echo "PWD: ${PWD}"
+echo "Running: ${MPIRUN_COMMAND}"
+${MPIRUN_COMMAND}
+

@@ -1,0 +1,19 @@
+#!/bin/bash
+
+set -e
+
+[ -z "${CDASH_GROUP_NAME}" ]  && { echo "Error: CDASH_GROUP_NAME not defined" ; exit 1 ; }
+[ -z "${CDASH_BUILD_NAME}" ] && { echo "Error: CDASH_BUILD_NAME not defined" ; exit 1 ; }
+[ -z "${CDASH_SITE_NAME}" ]  && { echo "Error: CDASH_SITE_NAME not defined" ; exit 1 ; }
+
+
+TEST_DIR="@CMAKE_BINARY_DIR@"
+CMAKE_CMD="@CMAKE_COMMAND@"
+CTEST_CMD="@CMAKE_CTEST_COMMAND@"
+
+# Go in the test directory
+cd "${TEST_DIR}"
+# Configure the submission BUILDNAME and SITE
+"${CMAKE_CMD}" . -DSITE="${CDASH_SITE_NAME}" -DBUILDNAME="${CDASH_BUILD_NAME}"
+# Run and submit the tests
+${CTEST_CMD} -M "${CDASH_GROUP_NAME}" -T Test -T Submit

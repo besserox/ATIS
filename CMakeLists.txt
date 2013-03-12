@@ -8,14 +8,25 @@ set(OMB_NAME "osu-micro-benchmarks-3.9")
 
 
 # ------------------------- #
-#  Configure the testss     #
+#  Configure the tests      #
 # ------------------------- #
 
 set(TEST_DIR "${CMAKE_BINARY_DIR}/tests")
-configure_file( "${CMAKE_SOURCE_DIR}/tests/compile-hello.sh.in"          "${TEST_DIR}/compile-hello.sh"          @ONLY )
-configure_file( "${CMAKE_SOURCE_DIR}/tests/compile-omb.sh.in"            "${TEST_DIR}/compile-omb.sh"            @ONLY )
-configure_file( "${CMAKE_SOURCE_DIR}/tests/mpirun.sh.in"                 "${TEST_DIR}/mpirun.sh"                 @ONLY )
-configure_file( "${CMAKE_SOURCE_DIR}/tests/mpirun_absolute_path.sh.in"   "${TEST_DIR}/mpirun_absolute_path.sh"   @ONLY )
+
+# create MPI test scripts
+configure_file( "${CMAKE_SOURCE_DIR}/tests/compile-hello.sh.in"          "${TEST_DIR}/compile-hello.sh"                    @ONLY )
+configure_file( "${CMAKE_SOURCE_DIR}/tests/compile-omb.sh.in"            "${TEST_DIR}/compile-omb.sh"                      @ONLY )
+configure_file( "${CMAKE_SOURCE_DIR}/tests/mpirun.sh.in"                 "${TEST_DIR}/mpirun.sh"                           @ONLY )
+configure_file( "${CMAKE_SOURCE_DIR}/tests/mpirun_absolute_path.sh.in"   "${TEST_DIR}/mpirun_absolute_path.sh"             @ONLY )
+
+# create management scripts
+configure_file( "${CMAKE_SOURCE_DIR}/test_and_submit.sh.in"              "${CMAKE_BINARY_DIR}/test_and_submit.sh"          @ONLY )
+configure_file( "${CMAKE_SOURCE_DIR}/test_mpi_modules.sh.in"             "${CMAKE_BINARY_DIR}/test_mpi_modules.sh"         @ONLY )
+configure_file( "${CMAKE_SOURCE_DIR}/update_mpi_module_list.sh.in"       "${CMAKE_BINARY_DIR}/update_mpi_module_list.sh"   @ONLY )
+
+# generate initial module list
+execute_process( COMMAND "${CMAKE_BINARY_DIR}/update_mpi_module_list.sh" )
+
 
 
 

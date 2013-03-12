@@ -84,3 +84,15 @@ The same script can be submitted to OAR to perform non-interactive testing of al
 
 This script already contains the required OAR parameters. It must be run on the cluster frontend.
 
+
+## Adding new tests
+
+The `CMakelists.txt` file describes the tests using the CMake/CTest language. 
+It is simple enough so you can understand how to add a new test easily.
+
+A few pointers to the CMake/CTest documentation:
+* [CMake documentation](http://www.cmake.org/cmake/help/v2.8.10/cmake.html) 
+* [CTest documentation](http://www.cmake.org/cmake/help/v2.8.10/ctest.html) 
+* [add_test command](http://www.cmake.org/cmake/help/v2.8.10/cmake.html#command:add_test) 
+* [Test properties](http://www.cmake.org/cmake/help/v2.8.10/cmake.html#section_PropertiesonTests) 
+

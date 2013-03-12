@@ -24,7 +24,7 @@ Create a directory to hold the configured scripts
 Generate the script with CMake
 
     $> cd modules-check-MPI  
-    $> cmake ../modules-check-src
+    $> cmake ../modules-check-src/MPI
 
 
 ## Testing an MPI stack

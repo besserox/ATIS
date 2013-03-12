@@ -1,8 +1,8 @@
 #!/bin/bash -l
 #OAR -l /nodes=2/core=1
 #OAR -n ModCheck_MPI
-#OAR -O "@CMAKE_BINARY_DIR@/logs/check_all_mpi_modules.%jobid%.log"
-#OAR -E "@CMAKE_BINARY_DIR@/logs/check_all_mpi_modules.%jobid%.log"
+#OAR -O @CMAKE_BINARY_DIR@/logs/check_all_mpi_modules.%jobid%.log
+#OAR -E @CMAKE_BINARY_DIR@/logs/check_all_mpi_modules.%jobid%.log
 
 TEST_DIR="@CMAKE_BINARY_DIR@"
 CMAKE_CMD="@CMAKE_COMMAND@"

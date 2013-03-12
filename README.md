@@ -1,11 +1,11 @@
 -*- mode: markdown; mode: auto-fill; fill-column: 80 -*-
 `README` -- [HPC @ UL](http://hpc.uni.lu)
 
-        Time-stamp: <Mar 2013-03-12 11:44 svarrette>
+        Time-stamp: <Mar 2013-03-12 11:52 svarrette>
 
 -------------------
 
-# UL HPC Launcher scripts
+# UL HPC Modules Tests
 
 ## Synopsis
 

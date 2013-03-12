@@ -11,17 +11,17 @@ The configuration of the script is managed by CMake.
 ## Configure the scripts
 
 
-* Checkout the sources
+Checkout the sources
 
     $> git clone git@github.com:ULHPC/modules-check.git modules-check-src
 
 
-* Create a directory to hold the configured scripts
+Create a directory to hold the configured scripts
 
     $> mkdir modules-check-MPI
 
 
-* Generate the script with CMake
+Generate the script with CMake
 
     $> cd modules-check-MPI  
     $> cmake ../modules-check-src
@@ -30,21 +30,20 @@ The configuration of the script is managed by CMake.
 ## Testing an MPI stack
 
 
-* Running the tests
+Running the tests in the current environment
 
     $> ctest
 
-  This run the test with the current environment.
 
 
-* Running the tests for a given module
+To run the tests for a given module
 
     $> module purge           
     $> module load OpenMPI    
     $> ctest
 
 
-* You can even try
+You can even try
 
     $> export PATH=/path/to/my/mpi/install:$PATH
     $> ctest
@@ -53,34 +52,35 @@ The configuration of the script is managed by CMake.
 
 ## Submitting test results
 
-* Test results can be viewed on [UL CDash](http://cdash.uni.lux/index.php?project=Modules-Check)
+
+Using CTest, you can submit the results to the [UL CDash](http://cdash.uni.lux/index.php?project=Modules-Check) in the `Experimental` group:
+
+    $> ctest -D Experimental
 
 
-* ctest allows to submit the results to the UL dashboard in the Experimental group
+Alternatively, you can use the `test_and_submit.cmake` script to run and submit the results with explicit names.
 
-    $> ctest -M Experimental
-
-
-* Alternatively, you can use the test\_and\_submit.cmake script to run and submit the results with explicit names
-
-    $> export CDASH\_GROUP\_NAME="Experimental" CDASH\_SITE\_NAME="Gaia cluster" CDASH\_BUILD\_NAME="MPI module 'OpenMPI'"  
-    $> ctest -S test\_and\_submit.cmake
+    $> export CDASH_GROUP_NAME="Experimental"    
+    $> export CDASH_SITE_NAME="Gaia cluster"    
+    $> export CDASH_BUILD_NAME="MPI module 'OpenMPI'"  
+    $> ctest -S test_and_submit.cmake
 
 
 
 ## Automated testing
 
 
-* The testing of all MPI modules can be triggered interactively with the check\_all\_mpi\_modules.sh
+The testing of all MPI modules can be triggered interactively with the `check_all_mpi_modules.sh`.
 
-    $> ./check\_all\_mpi\_modules.sh
+    $> ./check_all_mpi_modules.sh
 
-  This script lists all the available MPI module, tests all of them, and submit the results to the UL dashboard.
-  It must be run inside an OAR job.
+This script lists all the available MPI module, tests all of them, and submit the results to the UL dashboard.
+It must be run inside an OAR job.
 
 
-* The same script can be submitted to OAR to perform non-interactive testing of all MPI modules
+The same script can be submitted to OAR to perform non-interactive testing of all MPI modules.
 
-    $> oarsub -S ./check\_all\_mpi\_modules.sh
+    $> oarsub -S ./check_all_mpi_modules.sh
 
-  This script already contains the required OAR parameters. It must be run on the cluster frontend.
+This script already contains the required OAR parameters. It must be run on the cluster frontend.
+

@@ -25,7 +25,7 @@ touch "${MODULE_LIST_FILE}"
 for MPI_NAME in ${MPI_NAME_LIST} ; do
 
     # Get list of modules matching MPI_NAME
-    LIST=$(module -i -t avail "${MPI_NAME}" 2>&1 | grep "${MPI_NAME}")
+    LIST=$(module -i -t avail "${MPI_NAME}" 2>&1 | grep "${MPI_NAME}" | cut -f 1 -d '(')
 
 
     for MODULE_NAME in ${LIST} ; do

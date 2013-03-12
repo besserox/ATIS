@@ -20,7 +20,7 @@ configure_file( "${CMAKE_SOURCE_DIR}/tests/mpirun.sh.in"                 "${TEST
 configure_file( "${CMAKE_SOURCE_DIR}/tests/mpirun_absolute_path.sh.in"   "${TEST_DIR}/mpirun_absolute_path.sh"             @ONLY )
 
 # create management scripts
-configure_file( "${CMAKE_SOURCE_DIR}/test_and_submit.sh.in"              "${CMAKE_BINARY_DIR}/test_and_submit.sh"          @ONLY )
+configure_file( "${CMAKE_SOURCE_DIR}/test_and_submit.cmake.in"           "${CMAKE_BINARY_DIR}/test_and_submit.cmake"       @ONLY )
 configure_file( "${CMAKE_SOURCE_DIR}/test_mpi_modules.sh.in"             "${CMAKE_BINARY_DIR}/test_mpi_modules.sh"         @ONLY )
 configure_file( "${CMAKE_SOURCE_DIR}/update_mpi_module_list.sh.in"       "${CMAKE_BINARY_DIR}/update_mpi_module_list.sh"   @ONLY )
 

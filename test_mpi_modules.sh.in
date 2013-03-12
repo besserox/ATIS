@@ -27,8 +27,6 @@ MPI_MODULE_LIST="$(cat ${TEST_DIR}/mpi_module_list.txt)"
 # Test all modules
 for MPI_MODULE_NAME in ${MPI_MODULE_LIST} ; do
 
-    echo
-    echo "-------------------------"
     echo "Testing MPI module '${MPI_MODULE_NAME}'"
 
     # define build name
@@ -40,7 +38,7 @@ for MPI_MODULE_NAME in ${MPI_MODULE_LIST} ; do
     module load "${MPI_MODULE_NAME}"
 
     export CDASH_GROUP_NAME CDASH_SITE_NAME CDASH_BUILD_NAME
-    "${TEST_DIR}/test_and_submit.sh"
+    "${CTEST_CMD}" -S "${TEST_DIR}/test_and_submit.cmake"
 
 done
 

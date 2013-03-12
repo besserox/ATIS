@@ -1,0 +1,44 @@
+
+# Set ctest configuration
+set(CTEST_SOURCE_DIRECTORY "@CMAKE_SOURCE_DIR@")
+set(CTEST_BINARY_DIRECTORY "@CMAKE_BINARY_DIR@")
+site_name(CTEST_DEFAULT_SITE_NAME)
+
+
+# Read variable from environment
+set(CDASH_GROUP_NAME $ENV{CDASH_GROUP_NAME})
+set(CDASH_BUILD_NAME $ENV{CDASH_BUILD_NAME})
+set(CDASH_SITE_NAME $ENV{CDASH_SITE_NAME})
+
+# Set default values
+if( NOT DEFINED CDASH_GROUP_NAME )
+  set(CDASH_GROUP_NAME "Experimental")  
+endif()
+
+# Set build name
+if(DEFINED CDASH_BUILD_NAME)
+  set(CTEST_BUILD_NAME "${CDASH_BUILD_NAME}")  
+else()
+  set(CTEST_BUILD_NAME "Module MPI undefined")
+endif()
+
+# Set site name 
+if(DEFINED CDASH_SITE_NAME)
+  set(CTEST_SITE "${CDASH_SITE_NAME}")  
+else()
+  set(CTEST_SITE "${CTEST_DEFAULT_SITE_NAME}")
+endif()
+
+
+# Force english output
+set(ENV{LC_ALL} C)
+
+# Initialize
+ctest_start(${CDASH_GROUP_NAME})
+
+# Run tests
+ctest_test()
+
+# Submit results
+ctest_submit(RETRY_COUNT 3 RETRY_DELAY 120)
+

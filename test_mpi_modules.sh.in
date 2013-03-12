@@ -19,7 +19,7 @@ CDASH_GROUP_NAME="Nightly"
 #NODE2=$(tail -n 1 ${OAR_NODE_FILE})
 #SITE_NAME="${NODE1}+${NODE2}"
 CDASH_SITE_NAME="$(hostname -f | cut -f 2- -d '.')"
-echo "SITE_NAME = ${SITE_NAME}"
+echo "Site = ${CDASH_SITE_NAME}"
 
 # List all MPI modules
 MPI_MODULE_LIST="$(cat ${TEST_DIR}/mpi_module_list.txt)"

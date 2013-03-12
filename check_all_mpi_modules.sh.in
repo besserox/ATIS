@@ -8,6 +8,11 @@ CTEST_CMD="@CMAKE_CTEST_COMMAND@"
 
 MODULE_LIST_FILE="${TEST_DIR}/mpi_module_list.txt"
 
+
+# Check we are inside an OAR job
+[ -z "${OAR_NODE_FILE}" ] && { echo "Error: OAR_NODE_FILE not defined. You should run the test inside an OAR job" ; exit 1 ; }
+
+
 # Debug info
 echo "List of nodes: $(cat ${OAR_NODE_FILE} | tr '\n' ' ')"
 

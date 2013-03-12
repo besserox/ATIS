@@ -3,7 +3,6 @@
 # stop in case of error
 set -e
 
-
 TEST_DIR="@CMAKE_BINARY_DIR@"
 
 # File that contains the list of module to check
@@ -12,16 +11,16 @@ MODULE_LIST_FILE="${TEST_DIR}/mpi_module_list.txt"
 # List of MPI stacks to search for
 MPI_NAME_LIST="OpenMPI impi MVAPICH MPICH"
 
-# check for module command
+# Backup the content of the file
+[ -f "${MODULE_LIST_FILE}" ] && mv "${MODULE_LIST_FILE}" "${MODULE_LIST_FILE}.backup"
+
+# Create an empty list first
 touch "${MODULE_LIST_FILE}"
+
+# Check for module command
 module help > /dev/null 2>&1 || { echo "Warning: module command not found, cannot generate mpi_module_list.txt" ; exit 1 ; }
 
-
-# Backup the content of the file
-mv "${MODULE_LIST_FILE}" "${MODULE_LIST_FILE}.backup"
-touch "${MODULE_LIST_FILE}"
-
-
+# For all kind of MPI
 for MPI_NAME in ${MPI_NAME_LIST} ; do
 
     # Get list of modules matching MPI_NAME

@@ -36,6 +36,13 @@ set(ENV{LC_ALL} C)
 # Initialize
 ctest_start(${CDASH_GROUP_NAME})
 
+#set(CTEST_CONFIGURE_COMMAND "true")
+#ctest_configure()
+
+# Fake build (otherwise test results are accumulated in Nightly, is it a bug???)
+set(CTEST_BUILD_COMMAND "true")
+ctest_build()
+
 # Run tests
 ctest_test()
 

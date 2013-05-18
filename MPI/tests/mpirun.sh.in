@@ -6,13 +6,21 @@ set -e
 
 COMMAND="$@"
 
-MPIRUN_COMMAND="mpirun -machinefile ${OAR_NODE_FILE} -np 2 ${COMMAND}"
+# bugfix for OpenMPI
+which mpicc|grep -q /OpenMPI/ && export EXPORT_VARS="-x LD_LIBRARY_PATH -x PATH" # enable EXPORT_VARS if on OpenMPI stack
+# bugfix for IntelMPI
+which mpicc|grep -q /impi/ && cat $OAR_NODEFILE > $PWD/mpd.hosts
+
+MPIRUN_COMMAND="$(which mpirun) $EXPORT_VARS -machinefile ${OAR_NODE_FILE} -np 2 ${COMMAND}"
 
 echo "Machine file:"
 cat "${OAR_NODE_FILE}"
-echo "PWD: ${PWD}"
+echo
+echo "PATH=${PATH}"
+echo "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}"
+echo "PWD=${PWD}"
+echo
 echo "Running: ${MPIRUN_COMMAND}"
 echo
 
 ${MPIRUN_COMMAND}
-

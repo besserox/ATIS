@@ -31,7 +31,7 @@ if(NOT DEFINED CDASH_BUILD_DIR)
 endif()
 
 # Set the build options
-set(BUILD_OPTIONS="-DJOB_SCHEDULER=@JOB_SCHEDULER@")
+set(BUILD_OPTIONS "-DJOB_SCHEDULER=@JOB_SCHEDULER@")
 
 
 # Set CTest configuration

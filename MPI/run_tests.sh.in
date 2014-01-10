@@ -1,4 +1,7 @@
-#!/bin/sh
+#!/bin/bash
+
+# stop in case of error
+set -e
 
 CTEST_CMD="@CMAKE_CTEST_COMMAND@"
 TEST_DIR="@CMAKE_BINARY_DIR@"
@@ -14,6 +17,9 @@ if [ -n "${MODULE_NAME}" ] ; then
   BUILD_DIR_NAME="${MODULE_NAME_SAFE}"
   CDASH_BUILD_NAME="MPI Module ${MODULE_NAME_SAFE}"
 
+  # Check for module command
+  module help > /dev/null 2>&1 || { echo "Warning: module command not found" ; exit 1 ; }
+
   # cleanup environment
   module purge
   # load module
@@ -28,7 +34,7 @@ if [ -n "${MODULE_NAME}" ] ; then
 else
 
   # cleanup environment
-  module purge
+  module purge || true # don't fail if module command does not exist
   # define build name
   BUILD_DIR_NAME="default"
   CDASH_BUILD_NAME="Default Environment"

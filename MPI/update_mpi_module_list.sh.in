@@ -1,9 +1,10 @@
 #!/bin/bash
 
-# stop in case of error
+# Stop in case of error
 set -e
 
 TEST_DIR="@CMAKE_BINARY_DIR@"
+CUSTOM_MODULE_PATH="@CUSTOM_MODULE_PATH@"
 
 # File that contains the list of module to check
 MODULE_LIST_FILE="${TEST_DIR}/mpi_module_list.txt"

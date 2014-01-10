@@ -1,20 +1,16 @@
 #!/bin/sh
 
+# Stop on error
 set -e
 
-[ -z "${OAR_NODE_FILE}" ] && { echo "Error: OAR_NODE_FILE not defined. You should run the test inside an OAR job" ; exit 1 ; }
+TEST_DIR="@TEST_DIR@"
 
 COMMAND="$@"
+MACHINE_FILE=$( "${TEST_DIR}/get_machine_filename.sh" )
+MPIRUN_COMMAND="$(which mpirun) -np 2 -machinefile ${MACHINE_FILE} ${COMMAND}"
 
-# bugfix for OpenMPI
-which mpicc|grep -q /OpenMPI/ && export EXPORT_VARS="-x LD_LIBRARY_PATH -x PATH" # enable EXPORT_VARS if on OpenMPI stack
-# bugfix for IntelMPI
-which mpicc|grep -q /impi/ && cat $OAR_NODEFILE > $PWD/mpd.hosts
-
-MPIRUN_COMMAND="$(which mpirun) $EXPORT_VARS -machinefile ${OAR_NODE_FILE} -np 2 ${COMMAND}"
-
-echo "Machine file:"
-cat "${OAR_NODE_FILE}"
+echo "Machine file '${MACHINE_FILE}':"
+cat "${MACHINE_FILE}"
 echo
 echo "PATH=${PATH}"
 echo "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}"

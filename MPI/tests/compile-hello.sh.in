@@ -10,7 +10,7 @@ SOURCE_DIR="@CMAKE_SOURCE_DIR@"
 rm -f "${TEST_DIR}/hello"
 
 # Test compilation
-mpicc "${SOURCE_DIR}/tests/hello.c" -o "${TEST_DIR}/hello"
+mpicc "${SOURCE_DIR}/hello.c" -o "${TEST_DIR}/hello"
 
 
 

@@ -16,7 +16,7 @@ fi
 
 # Configure and compile OMB
 cd "${TEST_DIR}"
-tar -xzf "${SOURCE_DIR}/tests/${OMB_NAME}.tar.gz"
+tar -xzf "${SOURCE_DIR}/${OMB_NAME}.tar.gz"
 cd "${OMB_DIR}"
 ./configure
 make

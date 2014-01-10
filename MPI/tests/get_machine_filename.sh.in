@@ -1,0 +1,40 @@
+#!/bin/bash
+
+# Stop on error
+set -e
+
+TEST_DIR="@TEST_DIR@"
+JOB_SCHEDULER="@JOB_SCHEDULER@"
+
+case "${JOB_SCHEDULER}" in
+
+"None")
+    MACHINE_FILE="${TEST_DIR}/machine_file.txt"
+    echo "localhost" > "${MACHINE_FILE}"
+    ;;
+
+"OAR")
+    [ -z "${OAR_NODE_FILE}" ] && { echo "Error: OAR_NODE_FILE not defined. You should run the tests inside an OAR job" ; exit 1 ; }
+    MACHINE_FILE="${OAR_NODE_FILE}"
+    ;;
+
+"PBS")
+    [ -z "${PBS_NODE_FILE}" ] && { echo "Error: PBS_NODE_FILE not defined. You should run the tests inside a PBS job" ; exit 1 ; }
+    MACHINE_FILE="${PBS_NODE_FILE}"
+    ;;
+
+*)
+    echo "Unkown JOB_SCHEDULER='${JOB_SCHEDULER}'" 1>&2
+    exit 1
+    ;;
+
+esac
+
+# Check the machine file
+if [ ! -f "${MACHINE_FILE}" ] ; then
+  echo "Error: Machine file '${MACHINE_FILE}' does not exist."
+  exit 1
+fi
+
+# Print machine file
+echo "${MACHINE_FILE}"

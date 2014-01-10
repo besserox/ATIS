@@ -1,0 +1,63 @@
+#!/bin/sh
+
+CTEST_CMD="@CMAKE_CTEST_COMMAND@"
+TEST_DIR="@CMAKE_BINARY_DIR@"
+
+# The module to test must be passed as the first argument
+# If no argument, just test the default environment
+MODULE_NAME="$1"
+
+if [ -n "${MODULE_NAME}" ] ; then
+
+  # define build name
+  MODULE_NAME_SAFE="$(echo ${MODULE_NAME} | tr '/' '_')"
+  BUILD_DIR_NAME="${MODULE_NAME_SAFE}"
+  CDASH_BUILD_NAME="MPI Module ${MODULE_NAME_SAFE}"
+
+  # cleanup environment
+  module purge
+  # load module
+  module load "${MODULE_NAME}"
+  
+  # Check module is loaded
+  if ! module list 2>&1 | grep "${MODULE_NAME}" > /dev/null ; then
+    echo "Failed to load MPI module '{MODULE_NAME}'"
+    exit 1
+  fi
+
+else
+
+  # cleanup environment
+  module purge
+  # define build name
+  BUILD_DIR_NAME="default"
+  CDASH_BUILD_NAME="Default Environment"
+
+fi
+
+# Define site name, if not defined
+if [ -z "${CDASH_SITE_NAME}" ] ; then
+  CDASH_SITE_NAME="$(hostname -f | cut -f 2- -d '.')"
+fi
+
+# Define group name, if not defined
+if [ -z "${CDASH_GROUP_NAME}" ] ; then
+  CDASH_GROUP_NAME="Experimental"
+fi
+
+# Define a build directory
+TAG="$(date '+%Y%m%d-%H%M%S')"
+BUILD_DIR="${TEST_DIR}/build_${TAG}_${BUILD_DIR_NAME}.XXXX"
+CDASH_BUILD_DIR=$(mktemp -d "${BUILD_DIR}")
+
+
+
+# Export values to the CTest script
+export CDASH_GROUP_NAME CDASH_SITE_NAME CDASH_BUILD_NAME CDASH_BUILD_DIR
+
+# Run the tests
+echo "**** Run tests for ${CDASH_BUILD_NAME}"
+"${CTEST_CMD}" -V -S "${TEST_DIR}/test_and_submit.cmake"
+
+# Clean old build directories
+find "${TEST_DIR}" -path "${TEST_DIR}/build_*" -mtime +2 -delete

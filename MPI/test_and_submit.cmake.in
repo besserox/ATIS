@@ -1,25 +1,14 @@
 
-# Set ctest configuration
-set(CTEST_SOURCE_DIRECTORY "@CMAKE_SOURCE_DIR@")
-set(CTEST_BINARY_DIRECTORY "@CMAKE_BINARY_DIR@")
-site_name(CTEST_DEFAULT_SITE_NAME)
-
 
 # Read variable from environment
 set(CDASH_GROUP_NAME $ENV{CDASH_GROUP_NAME})
+set(CDASH_SITE_NAME  $ENV{CDASH_SITE_NAME})
 set(CDASH_BUILD_NAME $ENV{CDASH_BUILD_NAME})
-set(CDASH_SITE_NAME $ENV{CDASH_SITE_NAME})
+set(CDASH_BUILD_DIR  $ENV{CDASH_BUILD_DIR})
 
 # Set default values
 if( NOT DEFINED CDASH_GROUP_NAME )
   set(CDASH_GROUP_NAME "Experimental")  
-endif()
-
-# Set build name
-if(DEFINED CDASH_BUILD_NAME)
-  set(CTEST_BUILD_NAME "${CDASH_BUILD_NAME}")  
-else()
-  set(CTEST_BUILD_NAME "Module MPI undefined")
 endif()
 
 # Set site name 
@@ -29,6 +18,31 @@ else()
   set(CTEST_SITE "${CTEST_DEFAULT_SITE_NAME}")
 endif()
 
+# Set build name
+if(DEFINED CDASH_BUILD_NAME)
+  set(CTEST_BUILD_NAME "${CDASH_BUILD_NAME}")  
+else()
+  set(CTEST_BUILD_NAME "Undefined")
+endif()
+
+# Set build dir
+if(NOT DEFINED CDASH_BUILD_DIR)
+  set(CDASH_BUILD_DIR "@CMAKE_BINARY_DIR@/${CDASH_BUILD_NAME}")  
+endif()
+
+# Set the build options
+set(BUILD_OPTIONS="-DJOB_SCHEDULER=@JOB_SCHEDULER@")
+
+
+# Set CTest configuration
+set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
+set(CTEST_SOURCE_DIRECTORY "@CMAKE_SOURCE_DIR@/tests")
+set(CTEST_BINARY_DIRECTORY "${CDASH_BUILD_DIR}")
+site_name(CTEST_DEFAULT_SITE_NAME)
+set(CTEST_CUSTOM_MAXIMUM_PASSED_TEST_OUTPUT_SIZE 20480)
+set(CTEST_CUSTOM_MAXIMUM_FAILED_TEST_OUTPUT_SIZE 1024000)
+set(CTEST_CUSTOM_MAXIMUM_NUMBER_OF_WARNINGS 500)
+set(CTEST_CUSTOM_MAXIMUM_NUMBER_OF_ERRORS 500)
 
 # Force english output
 set(ENV{LC_ALL} C)
@@ -36,14 +50,13 @@ set(ENV{LC_ALL} C)
 # Initialize
 ctest_start(${CDASH_GROUP_NAME})
 
-#set(CTEST_CONFIGURE_COMMAND "true")
-#ctest_configure()
+# Configure the tests for this module
+ctest_configure(OPTIONS "${BUILD_OPTIONS}")
 
-# Fake build (otherwise test results are accumulated in Nightly, is it a bug???)
-set(CTEST_BUILD_COMMAND "true")
+# Run make (just do nothing)
 ctest_build()
 
-# Run tests
+# Run tests for this module
 ctest_test()
 
 # Submit results

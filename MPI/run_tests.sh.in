@@ -37,6 +37,9 @@ fi
 
 # Define site name, if not defined
 if [ -z "${CDASH_SITE_NAME}" ] ; then
+  CDASH_SITE_NAME="@CDASH_SITE_NAME@"
+fi
+if [ "${CDASH_SITE_NAME}" = "default" ] ; then
   CDASH_SITE_NAME="$(hostname -f | cut -f 2- -d '.')"
 fi
 

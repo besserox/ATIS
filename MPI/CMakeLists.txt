@@ -11,6 +11,9 @@ project(ATIS-MPI)
 # Look for numdiff command
 find_program( NUMDIFF_COMMAND numdiff )
 
+# Look for Rscript command
+find_program( RSCRIPT_COMMAND Rscript )
+
 
 
 # ------------------------- #
@@ -37,6 +40,12 @@ if(NUMDIFF_COMMAND)
 endif()
 option( COMPARE_RESULTS "Compare the result of some tests with some reference results" "${COMPARE_RESULTS_DEFAULT_VALUE}" )
 
+# Option for result plotting
+set(PLOT_RESULTS_DEFAULT_VALUE OFF)
+if(RSCRIPT_COMMAND)
+  set(PLOT_RESULTS_DEFAULT_VALUE ON)
+endif()
+option( PLOT_RESULTS "Plot results of some tests" "${PLOT_RESULTS_DEFAULT_VALUE}" )
 
 
 # ------------------------- #
@@ -44,8 +53,13 @@ option( COMPARE_RESULTS "Compare the result of some tests with some reference re
 # ------------------------- #
 
 # Result comparison requires the numdiff command
-if( RESULT_COMPARISON AND NOT NUMDIFF_COMMAND )
+if( COMPARE_RESULTS AND NOT NUMDIFF_COMMAND )
   message( FATAL_ERROR "numdiff command not found! Cannot enable the result comparison" )
+endif()
+
+# Plotting results requires the Rscript command
+if( PLOT_RESULTS AND NOT RSCRIPT_COMMAND )
+  message( FATAL_ERROR "Rscript command not found! Cannot enable the result plotting" )
 endif()
 
 

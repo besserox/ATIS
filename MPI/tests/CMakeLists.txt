@@ -23,7 +23,7 @@ set( JOB_SCHEDULER "None" CACHE STRING "Job Scheduler to use to find the machine
 set_property( CACHE JOB_SCHEDULER PROPERTY STRINGS "None" "OAR" "PBS" )
 
 # Option for result comparison
-option( RESULT_COMPARISON "Compare the result of some tests with some reference results" "${NUMDIFF_COMMAND}" )
+option( COMPARE_RESULTS "Compare the result of some tests with some reference results" "${NUMDIFF_COMMAND}" )
 
 
 # ------------------------- #
@@ -31,7 +31,7 @@ option( RESULT_COMPARISON "Compare the result of some tests with some reference 
 # ------------------------- #
 
 # Result comparison requires the numdiff command
-if( RESULT_COMPARISON AND NOT NUMDIFF_COMMAND )
+if( COMPARE_RESULTS AND NOT NUMDIFF_COMMAND )
   message( FATAL_ERROR "numdiff command not found! Cannot enable the result comparison" )
 endif()
 
@@ -132,7 +132,7 @@ set_tests_properties(84-MPI-mpirun-osu_latency   PROPERTIES TIMEOUT 60)
 set_tests_properties(84-MPI-mpirun-osu_latency   PROPERTIES PASS_REGULAR_EXPRESSION "OSU MPI Latency Test")
 set_tests_properties(84-MPI-mpirun-osu_latency   PROPERTIES FAIL_REGULAR_EXPRESSION "${FAILURE_PATTERN}")
 
-if(RESULT_COMPARISON) 
+if(COMPARE_RESULTS) 
   # Check the output of OMB osu_bw
   set(OSU_BW_REFERENCE "${REFERENCE_DIR}/osu_bw")
   add_test(83-MPI-mpirun-osu_bw_check   "${NUMDIFF_COMMAND}" "--overview" "--relative-tolerance=0.1" "--negative-differences" "${OSU_BW_REFERENCE}" "${OSU_BW_OUTPUT}")

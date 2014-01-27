@@ -31,11 +31,11 @@ set_property( CACHE JOB_SCHEDULER PROPERTY STRINGS "None" "OAR" "PBS" )
 set( CUSTOM_MODULE_PATH "" CACHE STRING "Force a MODULE_PATH before running the tests. ('default' means no override)")
 
 # Option for result comparison
-set(RESULT_COMPARISON_DEFAULT_VALUE OFF)
+set(COMPARE_RESULTS_DEFAULT_VALUE OFF)
 if(NUMDIFF_COMMAND)
-  set(RESULT_COMPARISON_DEFAULT_VALUE ON)
+  set(COMPARE_RESULTS_DEFAULT_VALUE ON)
 endif()
-option( RESULT_COMPARISON "Compare the result of some tests with some reference results" "${RESULT_COMPARISON_DEFAULT_VALUE}" )
+option( COMPARE_RESULTS "Compare the result of some tests with some reference results" "${COMPARE_RESULTS_DEFAULT_VALUE}" )
 
 
 

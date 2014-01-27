@@ -69,4 +69,5 @@ echo "**** Run tests for ${CDASH_BUILD_NAME}"
 "${CTEST_CMD}" -V -S "${TEST_DIR}/test_and_submit.cmake"
 
 # Clean old build directories
-find "${TEST_DIR}" -path "${TEST_DIR}/build_*" -mtime +2 -delete
+find "${TEST_DIR}" -path "${TEST_DIR}/build_*" -mtime +1 -delete
+find "${TEST_DIR}" -path "${TEST_DIR}/build_*" -type d -empty -delete

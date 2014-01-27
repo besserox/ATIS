@@ -5,14 +5,38 @@ include(CTest)
 enable_testing()
 
 
+# ------------------------- #
+#  Find external programs   #
+# ------------------------- #
+
+# Look for numdiff command
+find_program( NUMDIFF_COMMAND numdiff )
+
+
 
 # ------------------------- #
 #  CMake options            #
 # ------------------------- #
 
 # Option for to select the Job Scheduler
-SET( JOB_SCHEDULER "None" CACHE STRING "Job Scheduler to use to find the machine file. Possible values are: None, OAR, PBS.")
-SET_PROPERTY( CACHE JOB_SCHEDULER PROPERTY STRINGS "None" "OAR" "PBS" )
+set( JOB_SCHEDULER "None" CACHE STRING "Job Scheduler to use to find the machine file. Possible values are: None, OAR, PBS.")
+set_property( CACHE JOB_SCHEDULER PROPERTY STRINGS "None" "OAR" "PBS" )
+
+# Option for result comparison
+option( RESULT_COMPARISON "Compare the result of some tests with some reference results" "${NUMDIFF_COMMAND}" )
+
+
+# ------------------------- #
+#  Check CMake options      #
+# ------------------------- #
+
+# Result comparison requires the numdiff command
+if( RESULT_COMPARISON AND NOT NUMDIFF_COMMAND )
+  message( FATAL_ERROR "numdiff command not found! Cannot enable the result comparison" )
+endif()
+
+
+
 
 
 # ------------------------- #
@@ -21,6 +45,7 @@ SET_PROPERTY( CACHE JOB_SCHEDULER PROPERTY STRINGS "None" "OAR" "PBS" )
 
 set(OMB_NAME "osu-micro-benchmarks-3.9")
 set(TEST_DIR "${CMAKE_BINARY_DIR}")
+set(REFERENCE_DIR "${CMAKE_SOURCE_DIR}/reference_results")
 
 # create MPI test scripts
 configure_file( "${CMAKE_SOURCE_DIR}/compile-hello.sh.in"          "${TEST_DIR}/compile-hello.sh"                    @ONLY )
@@ -28,6 +53,7 @@ configure_file( "${CMAKE_SOURCE_DIR}/compile-omb.sh.in"            "${TEST_DIR}/
 configure_file( "${CMAKE_SOURCE_DIR}/get_machine_filename.sh.in"   "${TEST_DIR}/get_machine_filename.sh"             @ONLY )
 configure_file( "${CMAKE_SOURCE_DIR}/mpirun.sh.in"                 "${TEST_DIR}/mpirun.sh"                           @ONLY )
 configure_file( "${CMAKE_SOURCE_DIR}/mpirun_absolute_path.sh.in"   "${TEST_DIR}/mpirun_absolute_path.sh"             @ONLY )
+configure_file( "${CMAKE_SOURCE_DIR}/mpirun_log_output.sh.in"      "${TEST_DIR}/mpirun_log_output.sh"                @ONLY )
 
 
 
@@ -89,7 +115,8 @@ set_tests_properties(80-MPI-compilation-omb   PROPERTIES TIMEOUT 120)
 set(OMB_DIR "${TEST_DIR}/${OMB_NAME}/mpi/pt2pt") 
 
 # Execution of OMB osu_bw
-add_test(82-MPI-mpirun-osu_bw   "${TEST_DIR}/mpirun_absolute_path.sh" "${OMB_DIR}/osu_bw")
+set(OSU_BW_OUTPUT "${TEST_DIR}/osu_bw_output")
+add_test(82-MPI-mpirun-osu_bw   "${TEST_DIR}/mpirun_log_output.sh" "${OSU_BW_OUTPUT}" "${OMB_DIR}/osu_bw")
 set_tests_properties(82-MPI-mpirun-osu_bw   PROPERTIES DEPENDS 80-MPI-compilation-omb)
 set_tests_properties(82-MPI-mpirun-osu_bw   PROPERTIES REQUIRED_FILES "${OMB_DIR}/osu_bw")
 set_tests_properties(82-MPI-mpirun-osu_bw   PROPERTIES TIMEOUT 60)
@@ -97,10 +124,27 @@ set_tests_properties(82-MPI-mpirun-osu_bw   PROPERTIES PASS_REGULAR_EXPRESSION "
 set_tests_properties(82-MPI-mpirun-osu_bw   PROPERTIES FAIL_REGULAR_EXPRESSION "${FAILURE_PATTERN}")
 
 # Execution of OMB osu_latency
-add_test(84-MPI-mpirun-osu_latency   "${TEST_DIR}/mpirun_absolute_path.sh" "${OMB_DIR}/osu_latency")
+set(OSU_LATENCY_OUTPUT "${TEST_DIR}/osu_latency_output")
+add_test(84-MPI-mpirun-osu_latency   "${TEST_DIR}/mpirun_log_output.sh" "${OSU_LATENCY_OUTPUT}" "${OMB_DIR}/osu_latency")
 set_tests_properties(84-MPI-mpirun-osu_latency   PROPERTIES DEPENDS 80-MPI-compilation-omb)
 set_tests_properties(84-MPI-mpirun-osu_latency   PROPERTIES REQUIRED_FILES "${OMB_DIR}/osu_latency")
 set_tests_properties(84-MPI-mpirun-osu_latency   PROPERTIES TIMEOUT 60)
 set_tests_properties(84-MPI-mpirun-osu_latency   PROPERTIES PASS_REGULAR_EXPRESSION "OSU MPI Latency Test")
 set_tests_properties(84-MPI-mpirun-osu_latency   PROPERTIES FAIL_REGULAR_EXPRESSION "${FAILURE_PATTERN}")
+
+if(RESULT_COMPARISON) 
+  # Check the output of OMB osu_bw
+  set(OSU_BW_REFERENCE "${REFERENCE_DIR}/osu_bw")
+  add_test(83-MPI-mpirun-osu_bw_check   "${NUMDIFF_COMMAND}" "--overview" "--relative-tolerance=0.1" "--negative-differences" "${OSU_BW_REFERENCE}" "${OSU_BW_OUTPUT}")
+  set_tests_properties(83-MPI-mpirun-osu_bw_check   PROPERTIES DEPENDS 82-MPI-mpirun-osu_bw)
+  set_tests_properties(83-MPI-mpirun-osu_bw_check   PROPERTIES REQUIRED_FILES "${OSU_BW_REFERENCE};${OSU_BW_OUTPUT}")
+  set_tests_properties(83-MPI-mpirun-osu_bw_check   PROPERTIES TIMEOUT 10)
+
+  # Check the output of OMB osu_latency
+  set(OSU_LATENCY_REFERENCE "${REFERENCE_DIR}/osu_latency")
+  add_test(85-MPI-mpirun-osu_latency_check   "${NUMDIFF_COMMAND}" "--overview" "--relative-tolerance=0.1" "--positive-differences" "${OSU_LATENCY_REFERENCE}" "${OSU_LATENCY_OUTPUT}")
+  set_tests_properties(85-MPI-mpirun-osu_latency_check   PROPERTIES DEPENDS 84-MPI-mpirun-osu_latency)
+  set_tests_properties(85-MPI-mpirun-osu_latency_check   PROPERTIES REQUIRED_FILES "${OSU_LATENCY_REFERENCE};${OSU_LATENCY_OUTPUT}")
+  set_tests_properties(85-MPI-mpirun-osu_latency_check   PROPERTIES TIMEOUT 10)
+endif()
 

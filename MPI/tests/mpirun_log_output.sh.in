@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Stop on error
+set -e
+
+TEST_DIR="@TEST_DIR@"
+
+OUTPUT_FILE="$1"
+shift
+COMMAND="$@"
+MACHINE_FILE=$( "${TEST_DIR}/get_machine_filename.sh" )
+MPIRUN_COMMAND="$(which mpirun) -np 2 -machinefile ${MACHINE_FILE} ${COMMAND}"
+
+echo "Machine file '${MACHINE_FILE}':"
+cat "${MACHINE_FILE}"
+echo
+echo "PATH=${PATH}"
+echo "LD_LIBRARY_PATH=${LD_LIBRARY_PATH}"
+echo "PWD=${PWD}"
+echo
+echo "Running: ${MPIRUN_COMMAND}"
+echo
+
+${MPIRUN_COMMAND} | tee "${OUTPUT_FILE}"

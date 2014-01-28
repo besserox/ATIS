@@ -12,8 +12,8 @@ if (length(args) != 1)
 data_file <- args[1];
 
 
-output_pdffile <- paste0(data_file,".pdf")
-output_pngfile <- paste0(data_file,".png")
+output_pdffile <- paste(data_file,".pdf",sep="")
+output_pngfile <- paste(data_file,".png",sep="")
 
 
 # Read data file

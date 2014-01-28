@@ -1,7 +1,11 @@
 #!/usr/bin/Rscript --vanilla
 
+library(gplots)
 
-TEST_DIR <- "@TEST_DIR@"
+# Configuration from CMake
+TEST_DIR           <- "@TEST_DIR@"
+REFERENCE_DIR      <- "@CMAKE_SOURCE_DIR@/reference_results"
+RELATIVE_TOLERANCE <- @RELATIVE_TOLERANCE@
 
 
 ######################
@@ -9,31 +13,65 @@ TEST_DIR <- "@TEST_DIR@"
 ######################
 
 # Input / output files
-data_file_osu_bw   <- paste( TEST_DIR, "/osu_bw_output", sep="" )
-output_file_osu_bw <- paste(data_file_osu_bw, ".png", sep="")
+output_file_osu_bw      <- paste( TEST_DIR, "/osu_bw_output", sep="" )
+reference_file_osu_bw   <- paste( REFERENCE_DIR, "/osu_bw", sep="")
+plot_osu_bw      <- paste(output_file_osu_bw, ".png", sep="")
+
+use_reference_bw <- file.exists(reference_file_osu_bw)
+
 
 # Read data file
-data_osu_bw <- read.table(data_file_osu_bw, header=F)
+output_data_osu_bw    <- read.table(output_file_osu_bw, header=F)
+# Exclude 0-size messages
+output_data_osu_bw <- output_data_osu_bw[output_data_osu_bw[,1]!=0,]
+
+xrange <- range( output_data_osu_bw[,1] )
+yrange <- range( output_data_osu_bw[,2] )
+
+if (use_reference_bw)
+{
+reference_data_osu_bw <- read.table(reference_file_osu_bw, header=F)
+# Exclude 0-size messages
+reference_data_osu_bw <- reference_data_osu_bw[reference_data_osu_bw[,1]!=0,]
+yrange <- range( yrange, reference_data_osu_bw[,2] )
+yrange <- range( yrange, reference_data_osu_bw[,2]*(1-RELATIVE_TOLERANCE) )
+}
+
+colors <- c("blue","black")
+linetypes <- c(1,2) 
+linewidth <- c(2,1.5)
+plotchar <- c(3,4)
+
 
 title <- "MPI Bandwidth - @SITE@ - @BUILDNAME@"
 xlabel <- "Message Size (Bytes)"
 ylabel <- "Bandwidth (MBytes/s)"
 
-png( filename=output_file_osu_bw, height=500, width=800, units = "px" )
+png( filename=plot_osu_bw, height=625, width=1000, units = "px", pointsize=18 )
 
-plot( data_osu_bw, type="b", col="blue", lwd=1.5, log="xy", ann=FALSE)
+plot( xrange, yrange, type='n', ann=FALSE, log="xy" )
 grid( nx=NULL, ny=NULL, col="gray10", lwd=1 )
+
+lines( output_data_osu_bw[,1], output_data_osu_bw[,2], type='b', lwd=linewidth[1], col=colors[1], lty=linetypes[1], pch=plotchar[1] )
+if (use_reference_bw)
+{
+lines( reference_data_osu_bw[,1], reference_data_osu_bw[,2], type='c', lwd=linewidth[2], col=colors[2], lty=linetypes[2], pch=plotchar[2] )
+plotCI( x=reference_data_osu_bw[,1], y=reference_data_osu_bw[,2], uiw=NULL, liw=reference_data_osu_bw[,2]*(1-RELATIVE_TOLERANCE), type='p', add=T, lwd=linewidth[2], col=colors[2], lty=1, pch=plotchar[2], sfrac=0.005, gap=0 )
+legend( "topleft", legend=c("Output","Reference"), cex=0.8, bg='white', col=colors, lty=linetypes, pch=plotchar )
+}
 
 title( main=title, xlab=xlabel, ylab=ylabel)
 
 dev.off()
 
+
 # Show plot in CDash
-cat('<DartMeasurementFile name="osu_bw" type="image/png"> ', output_file_osu_bw, ' </DartMeasurementFile>\n')
+cat('<DartMeasurementFile name="osu_bw" type="image/png"> ', plot_osu_bw, ' </DartMeasurementFile>\n')
 
 # Get maximal bandwidth
-max_bw <- max( data_osu_bw[,2] )
+max_bw <- max( output_data_osu_bw[,2] )
 cat('<DartMeasurement name="max_bw" type="numeric/double" encoding="none" compression="none"> ', max_bw, ' </DartMeasurement>\n')
+
 
 
 ######################
@@ -41,29 +79,62 @@ cat('<DartMeasurement name="max_bw" type="numeric/double" encoding="none" compre
 ######################
 
 # Input / output files
-data_file_osu_latency   <- paste( TEST_DIR, "/osu_latency_output", sep="" )
-output_file_osu_latency <- paste(data_file_osu_latency, ".png", sep="")
+output_file_osu_latency      <- paste( TEST_DIR, "/osu_latency_output", sep="" )
+reference_file_osu_latency   <- paste( REFERENCE_DIR, "/osu_latency", sep="")
+plot_osu_latency      <- paste(output_file_osu_latency, ".png", sep="")
+
+use_reference_latency <- file.exists(reference_file_osu_latency)
+
 
 # Read data file
-data_osu_latency <- read.table(data_file_osu_latency, header=F)
+output_data_osu_latency    <- read.table(output_file_osu_latency, header=F)
+# Exclude 0-size messages
+output_data_osu_latency <- output_data_osu_latency[output_data_osu_latency[,1]!=0,]
+
+xrange <- range( output_data_osu_latency[,1] )
+yrange <- range( output_data_osu_latency[,2] )
+
+if (use_reference_latency)
+{
+reference_data_osu_latency <- read.table(reference_file_osu_latency, header=F)
+# Exclude 0-size messages
+reference_data_osu_latency <- reference_data_osu_latency[reference_data_osu_latency[,1]!=0,]
+yrange <- range( yrange, reference_data_osu_latency[,2] )
+yrange <- range( yrange, reference_data_osu_latency[,2]*(1-RELATIVE_TOLERANCE) )
+}
+
+colors <- c("blue","black")
+linetypes <- c(1,2) 
+linewidth <- c(2,1.5)
+plotchar <- c(3,4)
+
 
 title <- "MPI Latency - @SITE@ - @BUILDNAME@"
 xlabel <- "Message Size (Bytes)"
 ylabel <- "Latency (us)"
 
-png( filename=output_file_osu_latency, height=500, width=800, units = "px" )
+png( filename=plot_osu_latency, height=625, width=1000, units = "px", pointsize=18 )
 
-plot( data_osu_latency, type="b", col="blue", lwd=1.5, log="xy", ann=FALSE)
+plot( xrange, yrange, type='n', ann=FALSE, log="xy" )
 grid( nx=NULL, ny=NULL, col="gray10", lwd=1 )
+
+lines( output_data_osu_latency[,1], output_data_osu_latency[,2], type='b', lwd=linewidth[1], col=colors[1], lty=linetypes[1], pch=plotchar[1] )
+if (use_reference_latency)
+{
+lines( reference_data_osu_latency[,1], reference_data_osu_latency[,2], type='c', lwd=linewidth[2], col=colors[2], lty=linetypes[2], pch=plotchar[2] )
+plotCI( x=reference_data_osu_latency[,1], y=reference_data_osu_latency[,2], uiw=NULL, liw=reference_data_osu_latency[,2]*(1-RELATIVE_TOLERANCE), type='p', add=T, lwd=linewidth[2], col=colors[2], lty=1, pch=plotchar[2], sfrac=0.005, gap=0 )
+legend( "topleft", legend=c("Output","Reference"), cex=0.8, bg='white', col=colors, lty=linetypes, pch=plotchar )
+}
 
 title( main=title, xlab=xlabel, ylab=ylabel)
 
 dev.off()
 
+
 # Show plot in CDash
-cat('<DartMeasurementFile name="osu_latency" type="image/png"> ', output_file_osu_latency, ' </DartMeasurementFile>\n')
+cat('<DartMeasurementFile name="osu_latency" type="image/png"> ', plot_osu_latency, ' </DartMeasurementFile>\n')
 
 # Get minimal latency
-min_latency <- min( data_osu_latency[,2] )
+min_latency <- min( output_data_osu_latency[,2] )
 cat('<DartMeasurement name="min_latency" type="numeric/double" encoding="none" compression="none"> ', min_latency, ' </DartMeasurement>\n')
 

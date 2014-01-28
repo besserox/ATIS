@@ -71,6 +71,7 @@ configure_file( "${CMAKE_SOURCE_DIR}/get_machine_filename.sh.in"   "${TEST_DIR}/
 configure_file( "${CMAKE_SOURCE_DIR}/mpirun.sh.in"                 "${TEST_DIR}/mpirun.sh"                           @ONLY )
 configure_file( "${CMAKE_SOURCE_DIR}/mpirun_absolute_path.sh.in"   "${TEST_DIR}/mpirun_absolute_path.sh"             @ONLY )
 configure_file( "${CMAKE_SOURCE_DIR}/mpirun_log_output.sh.in"      "${TEST_DIR}/mpirun_log_output.sh"                @ONLY )
+configure_file( "${CMAKE_SOURCE_DIR}/plot_osu_bw.R.in"             "${TEST_DIR}/plot_osu_bw.R"                       @ONLY )
 
 
 
@@ -152,16 +153,24 @@ set_tests_properties(84-MPI-mpirun-osu_latency   PROPERTIES FAIL_REGULAR_EXPRESS
 if(COMPARE_RESULTS) 
   # Check the output of OMB osu_bw
   set(OSU_BW_REFERENCE "${REFERENCE_DIR}/osu_bw")
-  add_test(83-MPI-mpirun-osu_bw_check   "${NUMDIFF_COMMAND}" "--overview" "--relative-tolerance=0.1" "--negative-differences" "${OSU_BW_REFERENCE}" "${OSU_BW_OUTPUT}")
-  set_tests_properties(83-MPI-mpirun-osu_bw_check   PROPERTIES DEPENDS 82-MPI-mpirun-osu_bw)
-  set_tests_properties(83-MPI-mpirun-osu_bw_check   PROPERTIES REQUIRED_FILES "${OSU_BW_REFERENCE};${OSU_BW_OUTPUT}")
-  set_tests_properties(83-MPI-mpirun-osu_bw_check   PROPERTIES TIMEOUT 10)
+  add_test(82-MPI-mpirun-osu_bw_check   "${NUMDIFF_COMMAND}" "--overview" "--relative-tolerance=0.1" "--negative-differences" "${OSU_BW_REFERENCE}" "${OSU_BW_OUTPUT}")
+  set_tests_properties(82-MPI-mpirun-osu_bw_check   PROPERTIES DEPENDS 82-MPI-mpirun-osu_bw)
+  set_tests_properties(82-MPI-mpirun-osu_bw_check   PROPERTIES REQUIRED_FILES "${OSU_BW_REFERENCE};${OSU_BW_OUTPUT}")
+  set_tests_properties(82-MPI-mpirun-osu_bw_check   PROPERTIES TIMEOUT 10)
 
   # Check the output of OMB osu_latency
   set(OSU_LATENCY_REFERENCE "${REFERENCE_DIR}/osu_latency")
-  add_test(85-MPI-mpirun-osu_latency_check   "${NUMDIFF_COMMAND}" "--overview" "--relative-tolerance=0.1" "--positive-differences" "${OSU_LATENCY_REFERENCE}" "${OSU_LATENCY_OUTPUT}")
-  set_tests_properties(85-MPI-mpirun-osu_latency_check   PROPERTIES DEPENDS 84-MPI-mpirun-osu_latency)
-  set_tests_properties(85-MPI-mpirun-osu_latency_check   PROPERTIES REQUIRED_FILES "${OSU_LATENCY_REFERENCE};${OSU_LATENCY_OUTPUT}")
-  set_tests_properties(85-MPI-mpirun-osu_latency_check   PROPERTIES TIMEOUT 10)
+  add_test(84-MPI-mpirun-osu_latency_check   "${NUMDIFF_COMMAND}" "--overview" "--relative-tolerance=0.1" "--positive-differences" "${OSU_LATENCY_REFERENCE}" "${OSU_LATENCY_OUTPUT}")
+  set_tests_properties(84-MPI-mpirun-osu_latency_check   PROPERTIES DEPENDS 84-MPI-mpirun-osu_latency)
+  set_tests_properties(84-MPI-mpirun-osu_latency_check   PROPERTIES REQUIRED_FILES "${OSU_LATENCY_REFERENCE};${OSU_LATENCY_OUTPUT}")
+  set_tests_properties(84-MPI-mpirun-osu_latency_check   PROPERTIES TIMEOUT 10)
 endif()
 
+if(PLOT_RESULTS)
+  # Plot the results of OMB osu_bw
+  set(OSU_BW_PLOT "${OSU_BW_OUTPUT}.pdf")
+  add_test(82-MPI-mpirun-osu_bw_plot "${TEST_DIR}/plot_osu_bw.R" "${OSU_BW_OUTPUT}")
+  set_tests_properties(82-MPI-mpirun-osu_bw_plot   PROPERTIES DEPENDS 82-MPI-mpirun-osu_bw)
+  set_tests_properties(82-MPI-mpirun-osu_bw_plot   PROPERTIES REQUIRED_FILES "${OSU_BW_OUTPUT}")
+  set_tests_properties(82-MPI-mpirun-osu_bw_plot   PROPERTIES TIMEOUT 60)  
+endif()

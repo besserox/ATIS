@@ -1,0 +1,69 @@
+#!/usr/bin/Rscript --vanilla
+
+
+TEST_DIR <- "@TEST_DIR@"
+
+
+######################
+# OSU_BW
+######################
+
+# Input / output files
+data_file_osu_bw   <- paste( TEST_DIR, "/osu_bw_output", sep="" )
+output_file_osu_bw <- paste(data_file_osu_bw, ".png", sep="")
+
+# Read data file
+data_osu_bw <- read.table(data_file_osu_bw, header=F)
+
+title <- "MPI Bandwidth - @SITE@ - @BUILDNAME@"
+xlabel <- "Message Size (Bytes)"
+ylabel <- "Bandwidth (MBytes/s)"
+
+png( filename=output_file_osu_bw, height=500, width=800, units = "px" )
+
+plot( data_osu_bw, type="b", col="blue", lwd=1.5, log="xy", ann=FALSE)
+grid( nx=NULL, ny=NULL, col="gray10", lwd=1 )
+
+title( main=title, xlab=xlabel, ylab=ylabel)
+
+dev.off()
+
+# Show plot in CDash
+cat('<DartMeasurementFile name="osu_bw" type="image/png"> ', output_file_osu_bw, ' </DartMeasurementFile>\n')
+
+# Get maximal bandwidth
+max_bw <- max( data_osu_bw[,2] )
+cat('<DartMeasurement name="max_bw" type="numeric/double" encoding="none" compression="none"> ', max_bw, ' </DartMeasurement>\n')
+
+
+######################
+# OSU_LATENCY
+######################
+
+# Input / output files
+data_file_osu_latency   <- paste( TEST_DIR, "/osu_latency_output", sep="" )
+output_file_osu_latency <- paste(data_file_osu_latency, ".png", sep="")
+
+# Read data file
+data_osu_latency <- read.table(data_file_osu_latency, header=F)
+
+title <- "MPI Latency - @SITE@ - @BUILDNAME@"
+xlabel <- "Message Size (Bytes)"
+ylabel <- "Latency (us)"
+
+png( filename=output_file_osu_latency, height=500, width=800, units = "px" )
+
+plot( data_osu_latency, type="b", col="blue", lwd=1.5, log="xy", ann=FALSE)
+grid( nx=NULL, ny=NULL, col="gray10", lwd=1 )
+
+title( main=title, xlab=xlabel, ylab=ylabel)
+
+dev.off()
+
+# Show plot in CDash
+cat('<DartMeasurementFile name="osu_latency" type="image/png"> ', output_file_osu_latency, ' </DartMeasurementFile>\n')
+
+# Get minimal latency
+min_latency <- min( data_osu_latency[,2] )
+cat('<DartMeasurement name="min_latency" type="numeric/double" encoding="none" compression="none"> ', min_latency, ' </DartMeasurement>\n')
+

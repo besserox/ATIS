@@ -71,7 +71,7 @@ configure_file( "${CMAKE_SOURCE_DIR}/get_machine_filename.sh.in"   "${TEST_DIR}/
 configure_file( "${CMAKE_SOURCE_DIR}/mpirun.sh.in"                 "${TEST_DIR}/mpirun.sh"                           @ONLY )
 configure_file( "${CMAKE_SOURCE_DIR}/mpirun_absolute_path.sh.in"   "${TEST_DIR}/mpirun_absolute_path.sh"             @ONLY )
 configure_file( "${CMAKE_SOURCE_DIR}/mpirun_log_output.sh.in"      "${TEST_DIR}/mpirun_log_output.sh"                @ONLY )
-configure_file( "${CMAKE_SOURCE_DIR}/plot_osu_bw.R.in"             "${TEST_DIR}/plot_osu_bw.R"                       @ONLY )
+configure_file( "${CMAKE_SOURCE_DIR}/plot_osu_results.R.in"        "${TEST_DIR}/plot_osu_results.R"                  @ONLY )
 
 
 
@@ -167,10 +167,9 @@ if(COMPARE_RESULTS)
 endif()
 
 if(PLOT_RESULTS)
-  # Plot the results of OMB osu_bw
-  set(OSU_BW_PLOT "${OSU_BW_OUTPUT}.pdf")
-  add_test(82-MPI-mpirun-osu_bw_plot "${TEST_DIR}/plot_osu_bw.R" "${OSU_BW_OUTPUT}")
-  set_tests_properties(82-MPI-mpirun-osu_bw_plot   PROPERTIES DEPENDS 82-MPI-mpirun-osu_bw)
-  set_tests_properties(82-MPI-mpirun-osu_bw_plot   PROPERTIES REQUIRED_FILES "${OSU_BW_OUTPUT}")
-  set_tests_properties(82-MPI-mpirun-osu_bw_plot   PROPERTIES TIMEOUT 60)  
+  # Plot the results of OSU MPI benchmarks
+  add_test(90-MPI-osu_plot "${TEST_DIR}/plot_osu_results.R")
+  set_tests_properties(90-MPI-osu_plot   PROPERTIES DEPENDS "82-MPI-mpirun-osu_bw;84-MPI-mpirun-osu_latency")
+  set_tests_properties(90-MPI-osu_plot   PROPERTIES REQUIRED_FILES "${OSU_BW_OUTPUT};${OSU_LATENCY_OUTPUT}")
+  set_tests_properties(90-MPI-osu_plot   PROPERTIES TIMEOUT 10)  
 endif()

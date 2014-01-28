@@ -4,6 +4,7 @@ project(ATIS-MPI-Tests)
 include(CTest)
 enable_testing()
 
+set(TOLERANCE_LEVEL 0.5)
 
 # ------------------------- #
 #  Find external programs   #
@@ -153,14 +154,14 @@ set_tests_properties(84-MPI-mpirun-osu_latency   PROPERTIES FAIL_REGULAR_EXPRESS
 if(COMPARE_RESULTS) 
   # Check the output of OMB osu_bw
   set(OSU_BW_REFERENCE "${REFERENCE_DIR}/osu_bw")
-  add_test(82-MPI-mpirun-osu_bw_check   "${NUMDIFF_COMMAND}" "--overview" "--relative-tolerance=0.2" "--negative-differences" "${OSU_BW_REFERENCE}" "${OSU_BW_OUTPUT}")
+  add_test(82-MPI-mpirun-osu_bw_check   "${NUMDIFF_COMMAND}" "--overview" "--relative-tolerance=${TOLERANCE_LEVEL}" "--negative-differences" "${OSU_BW_REFERENCE}" "${OSU_BW_OUTPUT}")
   set_tests_properties(82-MPI-mpirun-osu_bw_check   PROPERTIES DEPENDS 82-MPI-mpirun-osu_bw)
   set_tests_properties(82-MPI-mpirun-osu_bw_check   PROPERTIES REQUIRED_FILES "${OSU_BW_REFERENCE};${OSU_BW_OUTPUT}")
   set_tests_properties(82-MPI-mpirun-osu_bw_check   PROPERTIES TIMEOUT 10)
 
   # Check the output of OMB osu_latency
   set(OSU_LATENCY_REFERENCE "${REFERENCE_DIR}/osu_latency")
-  add_test(84-MPI-mpirun-osu_latency_check   "${NUMDIFF_COMMAND}" "--overview" "--relative-tolerance=0.2" "--positive-differences" "${OSU_LATENCY_REFERENCE}" "${OSU_LATENCY_OUTPUT}")
+  add_test(84-MPI-mpirun-osu_latency_check   "${NUMDIFF_COMMAND}" "--overview" "--relative-tolerance=${TOLERANCE_LEVEL}" "--positive-differences" "${OSU_LATENCY_REFERENCE}" "${OSU_LATENCY_OUTPUT}")
   set_tests_properties(84-MPI-mpirun-osu_latency_check   PROPERTIES DEPENDS 84-MPI-mpirun-osu_latency)
   set_tests_properties(84-MPI-mpirun-osu_latency_check   PROPERTIES REQUIRED_FILES "${OSU_LATENCY_REFERENCE};${OSU_LATENCY_OUTPUT}")
   set_tests_properties(84-MPI-mpirun-osu_latency_check   PROPERTIES TIMEOUT 10)

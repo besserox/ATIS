@@ -7,7 +7,7 @@ TEST_DIR="@TEST_DIR@"
 
 COMMAND="$@"
 MACHINE_FILE=$( "${TEST_DIR}/get_machine_filename.sh" )
-MPIRUN_COMMAND="$(which mpirun) -np 2 -machinefile ${MACHINE_FILE} ${COMMAND}"
+MPIRUN_COMMAND="$(which mpirun) -machinefile ${MACHINE_FILE} -np 2 ${COMMAND}"
 
 echo "Machine file '${MACHINE_FILE}':"
 cat "${MACHINE_FILE}"

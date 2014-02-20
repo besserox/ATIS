@@ -15,12 +15,14 @@ case "${JOB_SCHEDULER}" in
 
 "OAR")
     [ -z "${OAR_NODE_FILE}" ] && { echo "Error: OAR_NODE_FILE not defined. You should run the tests inside an OAR job" ; exit 1 ; }
-    MACHINE_FILE="${OAR_NODE_FILE}"
+    MACHINE_FILE="${TEST_DIR}/machine_file.txt"
+    uniq "${OAR_NODE_FILE}" > "${MACHINE_FILE}"
     ;;
 
 "PBS")
     [ -z "${PBS_NODE_FILE}" ] && { echo "Error: PBS_NODE_FILE not defined. You should run the tests inside a PBS job" ; exit 1 ; }
-    MACHINE_FILE="${PBS_NODE_FILE}"
+    MACHINE_FILE="${TEST_DIR}/machine_file.txt"
+    uniq "${PBS_NODE_FILE}" > "${MACHINE_FILE}"
     ;;
 
 *)

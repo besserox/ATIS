@@ -4,7 +4,7 @@ project(ATIS-MPI-Tests)
 include(CTest)
 enable_testing()
 
-set(RELATIVE_TOLERANCE 0.5)
+set(RELATIVE_TOLERANCE 0.8)
 
 # ------------------------- #
 #  Find external programs   #

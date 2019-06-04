@@ -1,5 +1,12 @@
 # Automatic Testing of Installed Software
 
+ATIS is not developed or supported.
+
+For similar better projects, have a look at:
+- https://github.com/HPC-buildtest/buildtest-framework
+- https://github.com/eth-cscs/reframe
+
+
 ## Description
 
 Automatic Testing of Installed Software is a testing framework to validate the various flavors of software installed on an HPC site. It is composed of a set of unit tests, a runtime and a result-gathering dashboard. These tests are user-oriented as they assess the basic features that a general user expect to work on an HPC platform.
